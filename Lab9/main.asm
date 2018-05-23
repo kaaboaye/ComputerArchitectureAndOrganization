@@ -17,6 +17,7 @@
   .globl main
   main:
 
+  # Prompt and read vector size
   jal read_vector_size
 
   # Read vector 1
@@ -43,11 +44,15 @@
   lw $a2, vec2val
   jal print_vector
 
-  # Calc dot product
+  # Calc and print dot product
   jal dot_product
 
   li $v0, 10
   syscall #exit
+
+  # ##
+  # Functions
+  # ##
 
   # void read_vector_size()
   # @ Reads vector size and sets up memory
