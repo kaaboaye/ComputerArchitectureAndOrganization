@@ -27,15 +27,18 @@
     # for (; $s0 != 0; --$s0)
     # { $s1 *= $s0 }
     for:
+      # if ($s0 != 0)
+      # { goto for }
+      beq $s0, $zero, endFor
+
       # $s1 *= $s0
       mul $s1, $s1, $s0
 
       # --$s0
       addi $s0, $s0, -1
 
-      # if ($s0 != 0)
-      # { goto for }
-      bnez $s0, for
+      j for
+      endFor:
 
     # printf("%s%d%s", sResult, $s1, endl)
     li $v0, 4
@@ -53,4 +56,3 @@
     # exit()
     li $v0, 10
     syscall
-    
