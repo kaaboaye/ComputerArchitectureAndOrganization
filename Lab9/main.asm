@@ -26,17 +26,17 @@
   lw $a2, vec1val
   jal read_vector
 
-  # Print vector 1
-  la $a0, s_vector1
-  lw $a1, vec1ord
-  lw $a2, vec1val
-  jal print_vector
-
   # Read vector 2
   la $a0, s_provide_vector2
   lw $a1, vec2ord
   lw $a2, vec2val
   jal read_vector
+  
+  # Print vector 1
+  la $a0, s_vector1
+  lw $a1, vec1ord
+  lw $a2, vec1val
+  jal print_vector
 
   # Print vector 2
   la $a0, s_vector2
@@ -198,18 +198,16 @@
         addi $s2, $s2, 4
 
       beq $t3, $zero, is_zero_dot_product
-
-        li $v0, 1
         mul $a0, $t2, $t4
-        syscall
 
       j endif_dot_product
       is_zero_dot_product:
-        li $v0, 1
         move $a0, $zero
-        syscall
 
       endif_dot_product:
+
+      li $v0, 1
+      syscall
 
       li $v0, 4
       la $a0, s_space
