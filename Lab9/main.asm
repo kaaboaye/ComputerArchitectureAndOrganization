@@ -12,6 +12,7 @@
   s_provide_vector2: .asciiz "Provide vector 2\n"
   s_vector1: .asciiz "Vector 1: "
   s_vector2: .asciiz "Vector 2: "
+  s_dot_product: .asciiz "Dot product: "
 
 .text
   .globl main
@@ -31,7 +32,7 @@
   lw $a1, vec2ord
   lw $a2, vec2val
   jal read_vector
-  
+
   # Print vector 1
   la $a0, s_vector1
   lw $a1, vec1ord
@@ -179,6 +180,7 @@
     lw $s3, vec2ord
     lw $s4, vec2val
     add $s5, $s1, $s0
+    li $s6, 0 # Accumulator
 
     for_dot_product:
       lb $t1, ($s1)
@@ -198,22 +200,21 @@
         addi $s2, $s2, 4
 
       beq $t3, $zero, is_zero_dot_product
-        mul $a0, $t2, $t4
+        mul $t6, $t2, $t4
 
-      j endif_dot_product
+        add $s6, $s6, $t6
+
       is_zero_dot_product:
-        move $a0, $zero
-
-      endif_dot_product:
-
-      li $v0, 1
-      syscall
-
-      li $v0, 4
-      la $a0, s_space
-      syscall
 
       bne $s1, $s5, for_dot_product
+
+    li $v0, 4
+    la $a0, s_dot_product
+    syscall
+
+    li $v0, 1
+    move $a0, $s6
+    syscall
 
     li $v0, 4
     la $a0, s_endl
