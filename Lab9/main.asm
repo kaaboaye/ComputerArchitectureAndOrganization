@@ -67,11 +67,10 @@
     li $v0, 5
     syscall # Read size
 
-    move $s0, $v0
-    sw $s0, vec_len
+    sw $v0, vec_len
+    move $a0, $v0
 
     li $v0, 9
-    move $a0, $s0
     syscall
     sw $v0, vec1ord
 
@@ -80,7 +79,7 @@
     sw $v0, vec2ord
 
     li $t1, 4
-    mul $a0, $s0, $t1
+    mul $a0, $a0, $t1
 
     li $v0, 9
     syscall
@@ -160,7 +159,6 @@
 
       li $v0, 4
       la $a0, s_space
-
       syscall
 
       bne $s1, $s3, for_print_vector
