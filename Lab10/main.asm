@@ -30,11 +30,6 @@
 
     # Print array
     jal print
-
-    li $v0, 4
-    la $a0, endl
-    syscall
-
     jal sort
     jal print
 
@@ -125,4 +120,8 @@
       addi $t1, $t1, -1
       bnez $t1, for
 
+    li $v0, 4
+    la $a0, endl
+    syscall
+    
     jr $ra

@@ -1,23 +1,34 @@
 .data
-  arr: .word 4, 2, 1, 5, 7, 999, 2137, -2137
-  len: .word 8
   endl: .asciiz "\n"
   space: .asciiz " "
+  s_length: .asciiz "Length: "
+  s_provide_array: .asciiz "Provide array bellow\n"
 
 .text
   .globl main
   main:
-    la $s0, arr
-    lw $s1, len
+    # la $s0, arr
+    # lw $s1, len
     li $s2, 4 # sizeof(int)
     # $s3 sort::$ra
 
-    jal print
-
     li $v0, 4
-    la $a0, endl
+    la $a0, s_length
     syscall
 
+    li $v0, 5
+    syscall # Read length
+
+    move $s1, $v0 # Array length
+
+    mul $a0, $s1, $s2 # Memory amount
+    li $v0, 9
+    syscall # Alloc memory
+    move $s0, $v0 # Get pointer
+
+    # Read array
+    jal read
+    jal print
     jal sort
     jal print
 
@@ -83,6 +94,28 @@
 
     jr $ra
 
+  # Read array
+  read:
+    move $t0, $s0 # Array pointer
+
+    mul $t1, $s1, $s2 # Memory length
+    add $t1, $t0, $t1 # Pointer after array
+
+    li $v0, 4
+    la $a0, s_provide_array
+    syscall
+
+    forReadArray:
+      li $v0, 5
+      syscall
+
+      sw $v0, ($t0)
+      add $t0, $t0, $s2
+
+      bne $t0, $t1, forReadArray
+
+    jr $ra
+
   print:
     # $t0 int *arr = arr
     # $t1 int len = len
@@ -103,5 +136,9 @@
 
       addi $t1, $t1, -1
       bnez $t1, for
+
+    li $v0, 4
+    la $a0, endl
+    syscall
 
     jr $ra
