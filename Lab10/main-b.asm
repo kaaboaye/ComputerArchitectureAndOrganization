@@ -10,7 +10,6 @@
     # la $s0, arr
     # lw $s1, len
     li $s2, 4 # sizeof(int)
-    # $s3 sort::$ra
 
     li $v0, 4
     la $a0, s_length
@@ -50,8 +49,6 @@
     # $t8 swap::int a
     # $t9 swap::int b
 
-    move $s3, $ra
-
     li $t1, 0
     addi $t2, $s1, -1
     forI: # (int i = 0; i < iEnd = len - 1; ++i)
@@ -72,7 +69,12 @@
           # swap(*a, *b)
           move $a1, $t5
           sub $a0, $t5, $s2
+
+          addi $sp, $sp, -4
+          sw $ra, ($sp)
           jal swap
+          lw $ra ($sp)
+          addi $sp, $sp, 4
         else:
 
         addi $t3, $t3, 1
@@ -81,7 +83,7 @@
       addi $t1, $t1, 1
       blt $t1, $t2, forI
 
-    jr $s3
+    jr $ra
 
   swap: # (int *a, int *b)
     # $t8 int a

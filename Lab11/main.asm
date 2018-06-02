@@ -65,14 +65,19 @@
     lw $a2, ptr_matrix_b
     jal func_print_matrix
 
-    # Multiply
-    jal func_mul
-
-    # Print the result
-    lw $a0, int_matrix_c_row
-    lw $a1, int_matrix_c_col
-    lw $a2, ptr_matrix_c
+    lw $a0, int_matrix_a_row
+    lw $a1, int_matrix_a_col
+    lw $a2, ptr_matrix_a
     jal func_print_matrix
+
+    # # Multiply
+    # jal func_mul
+
+    # # Print the result
+    # lw $a0, int_matrix_c_row
+    # lw $a1, int_matrix_c_col
+    # lw $a2, ptr_matrix_c
+    # jal func_print_matrix
 
     li $v0, 10
     syscall
