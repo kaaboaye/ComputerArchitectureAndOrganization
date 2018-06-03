@@ -1,310 +1,274 @@
+# $a0 - reserved for asm
+# $a1 - const this
+
 .data
-  int_matrix_a_row: .word 0
-  int_matrix_a_col: .word 0
-  int_matrix_b_row: .word 0
-  int_matrix_b_col: .word 0
-  int_matrix_c_row: .word 0
-  int_matrix_c_col: .word 0
-  int_selected_col: .word 0
+  # struct matrix {
+  #   int row; 0()
+  #   int col; 4()
+  #   int *nodes; 8()
+  # }
+  matrix_a: .word 0, 0, 0
+  matrix_b: .word 0, 0, 0
+  matrix_c: .word 0, 0, 0
 
-  int_for_row: .word 0
-  int_for_col: .word 0
-  int_for_key: .word 0
-
-  int_accu: .word 0
-  int_a: .word 0
-
-  ptr_matrix_a: .word 0
-  ptr_matrix_b: .word 0
-  ptr_matrix_c: .word 0
-  ptr_selected: .word 0
-
-  s_endl: .asciiz "\n"
+  s_provide_matrix_size: .asciiz "Provide matrix size. Rows then cols\n"
+  s_provide_matrix_nodes: .asciiz "Provide matrix nodes\n"
+  s_printing_matrix: .asciiz "Printing matrix\n"
+  s_error_wrong_size: .asciiz "Error: Wrong matrix size\n"
   s_space: .asciiz " "
-  s_ask_size: .asciiz "Provide matrix size, rows then cols\n"
-  s_ask_matrix: .asciiz "Provide matrix bellow\n"
-  s_printing_matrix: .asciiz "Printing matrix...\n"
-  s_bad_matrix_size: .asciiz "Bad matrix size\n"
-  s_mult: .asciiz "Multiplying matrix\n"
-
-  reg_mul_ra: .word 0
+  s_endl: .asciiz "\n"
 
 .text
   .globl main
   main:
+    la $a1, matrix_a
+    jal new_matrix
+    jal read_matrix
+    jal print_matrix
 
-    # Matrix A
-    la $a0, int_matrix_a_row
-    la $a1, int_matrix_a_col
-    la $a2, ptr_matrix_a
-    jal func_create_matrix
+    la $a1, matrix_b
+    jal new_matrix
+    jal read_matrix
+    jal print_matrix
 
-    lw $a0, int_matrix_a_row
-    lw $a1, int_matrix_a_col
-    lw $a2, ptr_matrix_a
-    jal func_read_matrix
+    jal mul_matrix
 
-    lw $a0, int_matrix_a_row
-    lw $a1, int_matrix_a_col
-    lw $a2, ptr_matrix_a
-    jal func_print_matrix
-
-    # Matrix B
-    la $a0, int_matrix_b_row
-    la $a1, int_matrix_b_col
-    la $a2, ptr_matrix_b
-    jal func_create_matrix
-
-    lw $a0, int_matrix_b_row
-    lw $a1, int_matrix_b_col
-    lw $a2, ptr_matrix_b
-    jal func_read_matrix
-
-    lw $a0, int_matrix_b_row
-    lw $a1, int_matrix_b_col
-    lw $a2, ptr_matrix_b
-    jal func_print_matrix
-
-    lw $a0, int_matrix_a_row
-    lw $a1, int_matrix_a_col
-    lw $a2, ptr_matrix_a
-    jal func_print_matrix
-
-    # # Multiply
-    # jal func_mul
-
-    # # Print the result
-    # lw $a0, int_matrix_c_row
-    # lw $a1, int_matrix_c_col
-    # lw $a2, ptr_matrix_c
-    # jal func_print_matrix
+    la $a1, matrix_c
+    jal print_matrix
 
     li $v0, 10
     syscall
 
-  # $a0 & row size
-  # $a1 & col size
-  # $a2 & matrix
-  func_create_matrix:
-    move $s0, $a0
-    move $s1, $a1
-    move $s2, $a2
-
+  new_matrix:
     li $v0, 4
-    la $a0, s_ask_size
+    la $a0, s_provide_matrix_size
     syscall
 
     li $v0, 5
     syscall
-    move $s3, $v0
-    sw $s3, ($s0)
+    move $s0, $v0
+    sw $s0, 0($a1)
 
     li $v0, 5
     syscall
-    move $s4, $v0
-    sw $s4, ($s1)
+    move $s1, $v0
+    sw $s1, 4($a1)
 
-    li $t0, 4
-    mul $a0, $s3, $s4
-    mul $a0, $a0, $t1
+    mul $a0, $s0, $s1
+    li $t2, 4
+    mul $a0, $a0, $t2
     li $v0, 9
     syscall
-    sw $v0, ($s2)
+    sw $v0, 8($a1)
 
     jr $ra
 
-  # $a0 row size
-  # $a1 col size
-  # $a2 pointer to the matrix
-  func_read_matrix:
-    move $s1, $a2 # Pointer to the matrix
-
-    li $t1, 4
-    mul $s0, $a0, $a1 # Amount of matrix enteries
-    mul $s0, $s0, $t1
-    add $s2, $s1, $s0 # Matrix's end pointer
-
+  read_matrix:
     li $v0, 4
-    la $a0, s_ask_matrix
+    la $a0, s_provide_matrix_nodes
     syscall
 
-    loop_read_matrix_foreach:
+    lw $s0, 0($a1)
+    lw $s1, 4($a1)
+    lw $s2, 8($a1)
+
+    mul $t0, $s0, $s1
+    li $t1, 4
+    mul $t0, $t0, $t1
+    add $s3, $s2, $t0
+
+    loop_read_matrix:
       li $v0, 5
       syscall
 
-      sw $v0, ($s1)
+      sw $v0, ($s2)
 
-      addi $s1, $s1, 4
-      bne $s1, $s2, loop_read_matrix_foreach
+      addi $s2, $s2, 4
+      bne $s2, $s3, loop_read_matrix
 
     jr $ra
 
-  # $a0 row size
-  # $a1 col size
-  # $a2 pointer to the matrix
-  func_print_matrix:
-    move $s0, $a1 # Matrix col size
-    move $s1, $a2 # Pointer to the matrix
-
-    li $t1, 4
-    mul $t0, $a0, $a1
-    mul $t0, $t0, $t1
-    add $s2, $s1, $t0 # End ptr
-
+  print_matrix:
     li $v0, 4
     la $a0, s_printing_matrix
     syscall
 
-    li $t0, 0 # Endl counter
+    lw $s0, 0($a1)
+    lw $s1, 4($a1)
+    lw $s2, 8($a1)
+
+    mul $t0, $s0, $s1
+    li $t1, 4
+    mul $t0, $t0, $t1
+    add $s3, $s2, $t0
+
+    li $t0, 0 # endl counter
+
     loop_print_matrix:
       li $v0, 1
-      lw $a0, ($s1)
+      lw $a0, ($s2)
       syscall
 
-      # Make space or endl
       addi $t0, $t0, 1
-      bne $t0, $s0, unless_print_matrix_endl
+      bne $s1, $t0, else_print_matrix
         li $t0, 0
         la $a0, s_endl
-        j endif_print_matrix
-      unless_print_matrix_endl:
+      j endif_print_matrix
+      else_print_matrix:
         la $a0, s_space
       endif_print_matrix:
 
       li $v0, 4
       syscall
 
-      # Finish loop
-      addi $s1, $s1, 4
-      bne $s1, $s2, loop_print_matrix
+      addi $s2, $s2, 4
+      bne $s2, $s3, loop_print_matrix
 
     jr $ra
 
-  # @ $a0 row
-  # @ $a1 col
-  # @ $v0 &node
-  func_matrix_node:
-    lw $v0, ptr_selected
-    lw $s0, int_selected_col
+  mul_matrix:
+    addi $sp, $sp, -28
+    addi $fp, $sp, 8
+    # 0  int row
+    # 4  int col
+    # 8  int node
+    # 12 int *current
+    # 16 int *tmp
 
-    # Select row
-    mul $t0, $s0, $a0
+    la $s0, matrix_a
+    la $s1, matrix_b
+    la $s2, matrix_c
 
-    # Select col
-    add $t0, $t0, $a1
-
-    # word -> byte
-    li $t1, 4
-    mul $t0, $t0, $t1
-
-    # arr + n
-    add $v0, $v0, $t0
-
-    jr $ra
-
-  func_mul:
-    sw $ra, reg_mul_ra
-
-    # Check if multiplication is possible
-    lw $t0, int_matrix_a_col
-    lw $t1, int_matrix_b_row
-    beq $t0, $t1, endif_mul_size # if a_col != b_row
+    lw $t0, 4($s0)
+    lw $t1, 0($s1)
+    beq $t0, $t1, endif_mul_matrix_wrong_size
       li $v0, 4
-      la $a0, s_bad_matrix_size
+      la $a0, s_error_wrong_size
       syscall
 
       li $v0, 10
       syscall
-    endif_mul_size:
+    endif_mul_matrix_wrong_size:
 
-    li $v0, 4
-    la $a0, s_mult
-    syscall
+    # Construct matrix_c
+    lw $t0, 0($s0)
+    sw $t0, 0($s2)
+    lw $t1, 4($s1)
+    sw $t1, 4($s2)
 
-    # Set C size
-    lw $t0, int_matrix_a_row
-    lw $t1, int_matrix_b_col
-
-    sw $t0, int_matrix_c_col
-    sw $t1, int_matrix_c_row
-
-    # Alloc memory
-    li $t2, 4
     mul $a0, $t0, $t1
-    mul $a0, $a0, $t2
+    li $t0, 4
+    mul $a0, $a0, $t0
     li $v0, 9
     syscall
-    sw $v0, ptr_matrix_c
+    sw $v0, 8($s2)
 
-    sw $zero, int_for_row
+    # Fill matrix with 0
+    move $t0, $v0
+    add $t1, $t0, $a0
+
+    loop_empty_matrix:
+      sw $zero, ($t0)
+
+      addi $t0, $t0, 4
+      bne $t0, $t1, loop_empty_matrix
+
+    # Multiply
+    sw $zero, 0($fp)
     for_mul_row:
 
-      sw $zero, int_for_col
+      sw $zero, 4($fp)
       for_mul_col:
-        sw $zero, int_accu
 
-        sw $zero, int_for_key
+        sw $ra, 0($sp)
+        sw $fp, 4($sp)
+        addi $sp, $sp, -12 # args stack
+        sw $s2, 0($sp) # *matrix c
+        lw $t0, 0($fp) # for row
+        sw $t0, 4($sp) # row
+        lw $t0, 4($fp) # for col
+        sw $t0, 8($sp) # col
+        jal node_matrix
+        lw $ra, 0($sp)
+        lw $fp, 4($sp)
+        sw $v0, 12($fp)
+
+        sw $zero, 8($fp)
         for_mul_node:
-          # Select A
-          lw $t0, int_matrix_a_col
-          sw $t0, int_selected_col
-          lw $t0, ptr_matrix_a
-          sw $t0, ptr_selected
-          lw $a0, int_for_row
-          lw $a1, int_for_key
-          jal func_matrix_node
 
-          lw $t0, ($v0)
-          sw $t0, int_a
+          sw $ra, 0($sp)
+          sw $fp, 4($sp)
+          addi $sp, $sp, -12 # args stack
+          sw $s0, 0($sp) # *matrix a
+          lw $t0, 0($fp) # for row
+          sw $t0, 4($sp) # row
+          lw $t0, 8($fp) # for node
+          sw $t0, 8($sp) # col
+          jal node_matrix
+          lw $ra, 0($sp)
+          lw $fp, 4($sp)
+          sw $v0, 16($fp)
 
-          # Select B
-          lw $t0, int_matrix_b_col
-          sw $t0, int_selected_col
-          lw $t0, ptr_matrix_b
-          sw $t0, ptr_selected
-          lw $a0, int_for_key
-          lw $a1, int_for_col
-          jal func_matrix_node
+          sw $ra, 0($sp)
+          sw $fp, 4($sp)
+          addi $sp, $sp, -12 # args stack
+          sw $s1, 0($sp) # *matrix b
+          lw $t0, 8($fp) # for node
+          sw $t0, 4($sp) # row
+          lw $t0, 4($fp) # for col
+          sw $t0, 8($sp) # col
+          jal node_matrix
+          lw $ra, 0($sp)
+          lw $fp, 4($sp)
 
-          lw $t0, int_a
-          lw $t1, ($v0)
-          mul $t1, $t0, $t1
+          lw $t0, 12($fp)
+          lw $t1, ($t0)
+          lw $t2, 16($fp)
+          lw $t2, ($t2)
+          move $t3, $v0
 
-          lw $t0, int_accu
-          add $t0, $t0, $t1
-          sw $t0, int_accu
+          mul $t4, $t2, $t3
+          add $t1, $t1, $t4
+          sw $t1, ($t0)
 
-          lw $t0, int_for_key
+          lw $t0, 8($fp)
           addi $t0, $t0, 1
-          sw $t0, int_for_key
-          lw $t1, int_matrix_a_col
-          ble $t0, $t1, for_mul_node
+          sw $t0, 8($fp)
+          lw $t1, 4($s0)
+          bne $t0, $t1, for_mul_node
 
-
-        # Select C
-        lw $t0, int_matrix_c_col
-        sw $t0, int_selected_col
-        lw $t0, ptr_matrix_c
-        sw $t0, ptr_selected
-        lw $a0, int_for_row
-        lw $a1, int_for_col
-        jal func_matrix_node
-
-        lw $t0, int_accu
-        sw $t0, ($v0)
-
-        lw $t0, int_for_col
+        lw $t0, 4($fp)
         addi $t0, $t0, 1
-        sw $t0, int_for_col
-        lw $t1, int_matrix_c_col
-        ble $t0, $t1 for_mul_col
+        sw $t0, 4($fp)
+        lw $t1, 4($s2)
+        bne $t0, $t1, for_mul_col
 
-      lw $t0, int_for_row
+
+      lw $t0, 0($fp)
       addi $t0, $t0, 1
-      sw $t0, int_for_row
-      lw $t1, int_matrix_c_row
-      ble $t0, $t1, for_mul_row
+      sw $t0, 0($fp)
+      lw $t1, 0($s2)
+      bne $t0, $t1, for_mul_row
 
 
-    lw $ra, reg_mul_ra
+    addi $sp, $sp, 28
+    jr $ra
+
+  # 0 *matrix
+  # 4 row
+  # 8 col
+  node_matrix:
+    lw $t0, 0($sp) # matrix
+    lw $t1, 4($sp) # sel row
+    lw $t2, 8($sp) # sel col
+    addi $sp, $sp, 12
+
+    lw $t3, 4($t0) # mat col
+    mul $v0, $t1, $t3
+    add $v0, $v0, $t2
+    li $t4, 4
+    mul $v0, $v0, $t4
+    lw $t4, 8($t0)
+    add $v0, $v0, $t4
+
     jr $ra
