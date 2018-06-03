@@ -1,7 +1,7 @@
 # Exercise 6
 - Author: Mieszko Wawrzyniak 243563
 - Date: 26 April 2018
-- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab6/main.asm)
+- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab6/lab6.asm)
 
 ## Task
 Introductory classes, familiarize yourself with tools used during laboratory

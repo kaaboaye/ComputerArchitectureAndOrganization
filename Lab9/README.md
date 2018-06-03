@@ -1,7 +1,7 @@
 # Exercise 9
 - Author: Mieszko Wawrzyniak 243563
 - Date: 24 May 2018
-- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab9/main.asm)
+- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab9/lab9.asm)
 
 ## Task
   Vectors with a large number of zeros are called sparse vectors. They are

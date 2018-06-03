@@ -1,7 +1,7 @@
 # Exercise 7
 - Author: Mieszko Wawrzyniak 243563
 - Date: 10 May 2018
-- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab7/mips2.asm)
+- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab7/lab7.asm)
 
 ## Task
   1. Write a program which calculate the value of the following expression

@@ -1,8 +1,8 @@
 # Exercise 10
 - Author: Mieszko Wawrzyniak 243563
 - Date: 24 May 2018
-- [Version a](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab10/main.asm)
-- [Version b - with swap](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab10/main-b.asm)
+- [Version a](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab10/lab10a.asm)
+- [Version b - with swap](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab10/lab10b.asm)
 
 
 ## Task

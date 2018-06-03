@@ -1,7 +1,7 @@
 # Exercise 8
 - Author: Mieszko Wawrzyniak 243563
 - Date: 17 May 2018
-- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab8/main.asm)
+- [Source code](https://raw.githubusercontent.com/kaaboaye/ComputerArchitectureAndOrganization/master/Lab8/lab8.asm)
 
 ## Task
   1. Write a program which calculate the value of factorial of integer values.
