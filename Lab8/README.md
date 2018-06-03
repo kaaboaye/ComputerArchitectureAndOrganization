@@ -15,11 +15,11 @@
   code.
   ```c
 int factorial(int n) {
-  int fac = 1;
-  for (; n != 0; --n) {
-    fac *= n;
-  }
-  return fac;
+	int fac = 1;
+	for (; n != 0; --n) {
+		fac *= n;
+	}
+	return fac;
 }
   ```
   The greatest integer value for which program works correctly is `2^31-1`
