@@ -180,52 +180,85 @@
       sw $zero, 4($fp)
       for_mul_col:
 
-        sw $ra, 0($sp)
-        sw $fp, 4($sp)
-        addi $sp, $sp, -12 # args stack
-        sw $s2, 0($sp) # *matrix c
-        lw $t0, 0($fp) # for row
-        sw $t0, 4($sp) # row
-        lw $t0, 4($fp) # for col
-        sw $t0, 8($sp) # col
-        jal node_matrix
-        lw $ra, 0($sp)
-        lw $fp, 4($sp)
-        sw $v0, 12($fp)
+        # sw $ra, 0($sp)
+        # sw $fp, 4($sp)
+        # addi $sp, $sp, -12 # args stack
+        # sw $s2, 0($sp) # *matrix c
+        # lw $t0, 0($fp) # for row
+        # sw $t0, 4($sp) # row
+        # lw $t0, 4($fp) # for col
+        # sw $t0, 8($sp) # col
+        # jal node_matrix
+        # lw $ra, 0($sp)
+        # lw $fp, 4($sp)
+        # sw $v0, 12($fp)
+
+        lw $t0, 0($fp)
+        lw $t1, 4($s2)
+        mul $t0, $t0, $t1 # select row
+        lw $t1, 4($fp)
+        add $t0, $t0, $t1 # select col
+        li $t1, 4
+        mul $t0, $t0, $t1
+        lw $t1, 8($s2)
+        add $t0, $t0, $t1
+        sw $t0, 12($fp)
+
 
         sw $zero, 8($fp)
         for_mul_node:
 
-          sw $ra, 0($sp)
-          sw $fp, 4($sp)
-          addi $sp, $sp, -12 # args stack
-          sw $s0, 0($sp) # *matrix a
-          lw $t0, 0($fp) # for row
-          sw $t0, 4($sp) # row
-          lw $t0, 8($fp) # for node
-          sw $t0, 8($sp) # col
-          jal node_matrix
-          lw $ra, 0($sp)
-          lw $fp, 4($sp)
-          sw $v0, 16($fp)
+          # sw $ra, 0($sp)
+          # sw $fp, 4($sp)
+          # addi $sp, $sp, -12 # args stack
+          # sw $s0, 0($sp) # *matrix a
+          # lw $t0, 0($fp) # for row
+          # sw $t0, 4($sp) # row
+          # lw $t0, 8($fp) # for node
+          # sw $t0, 8($sp) # col
+          # jal node_matrix
+          # lw $ra, 0($sp)
+          # lw $fp, 4($sp)
+          # sw $v0, 16($fp)
+          #
+          # sw $ra, 0($sp)
+          # sw $fp, 4($sp)
+          # addi $sp, $sp, -12 # args stack
+          # sw $s1, 0($sp) # *matrix b
+          # lw $t0, 8($fp) # for node
+          # sw $t0, 4($sp) # row
+          # lw $t0, 4($fp) # for col
+          # sw $t0, 8($sp) # col
+          # jal node_matrix
+          # lw $ra, 0($sp)
+          # lw $fp, 4($sp)
 
-          sw $ra, 0($sp)
-          sw $fp, 4($sp)
-          addi $sp, $sp, -12 # args stack
-          sw $s1, 0($sp) # *matrix b
-          lw $t0, 8($fp) # for node
-          sw $t0, 4($sp) # row
-          lw $t0, 4($fp) # for col
-          sw $t0, 8($sp) # col
-          jal node_matrix
-          lw $ra, 0($sp)
-          lw $fp, 4($sp)
+          lw $t0, 0($fp)
+          lw $t1, 4($s0)
+          mul $t0, $t0, $t1 # select row
+          lw $t1, 8($fp)
+          add $t0, $t0, $t1 # select col
+          li $t1, 4
+          mul $t0, $t0, $t1
+          lw $t1, 8($s0)
+          add $t0, $t0, $t1
+          sw $t0, 16($fp)
+
+          lw $t0, 8($fp)
+          lw $t1, 4($s1)
+          mul $t0, $t0, $t1 # select row
+          lw $t1, 4($fp)
+          add $t0, $t0, $t1 # select col
+          li $t1, 4
+          mul $t0, $t0, $t1
+          lw $t1, 8($s1)
+          add $t3, $t0, $t1
 
           lw $t0, 12($fp)
           lw $t1, ($t0)
           lw $t2, 16($fp)
           lw $t2, ($t2)
-          move $t3, $v0
+          lw $t3, ($t3)
 
           mul $t4, $t2, $t3
           add $t1, $t1, $t4
@@ -254,21 +287,21 @@
     addi $sp, $sp, 28
     jr $ra
 
-  # 0 *matrix
-  # 4 row
-  # 8 col
-  node_matrix:
-    lw $t0, 0($sp) # matrix
-    lw $t1, 4($sp) # sel row
-    lw $t2, 8($sp) # sel col
-    addi $sp, $sp, 12
-
-    lw $t3, 4($t0) # mat col
-    mul $v0, $t1, $t3
-    add $v0, $v0, $t2
-    li $t4, 4
-    mul $v0, $v0, $t4
-    lw $t4, 8($t0)
-    add $v0, $v0, $t4
-
-    jr $ra
+  # # 0 *matrix
+  # # 4 row
+  # # 8 col
+  # node_matrix:
+  #   lw $t0, 0($sp) # matrix
+  #   lw $t1, 4($sp) # sel row
+  #   lw $t2, 8($sp) # sel col
+  #   addi $sp, $sp, 12
+  #
+  #   lw $t3, 4($t0) # mat col
+  #   mul $v0, $t1, $t3
+  #   add $v0, $v0, $t2
+  #   li $t4, 4
+  #   mul $v0, $v0, $t4
+  #   lw $t4, 8($t0)
+  #   add $v0, $v0, $t4
+  #
+  #   jr $ra
